@@ -11,12 +11,12 @@ module.exports = function (router) {
             return res.status(401).json({ error: 'Usuário não encontrado' })
         }
 
-     
+
         if (senha !== user.password) {
             return res.status(401).json({ error: 'Usuario não encontrado' })
         }
 
-        return res.status(200).json({ message: 'Usuario encontrado', user })
+        return res.status(200).json({ user })
 
     })
 }
