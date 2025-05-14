@@ -1,0 +1,22 @@
+const User = require('../user/user')
+const express = require('express')
+
+module.exports = function (router) {
+    router.post('/login', async (req, res) => {
+        const { email, senha } = req.body
+
+        const user = await User.findOne({ email })
+
+        if (!user) {
+            return res.status(401).json({ error: 'Usuário não encontrado' })
+        }
+
+     
+        if (senha !== user.password) {
+            return res.status(401).json({ error: 'Usuario não encontrado' })
+        }
+
+        return res.status(200).json({ message: 'Usuario encontrado', user })
+
+    })
+}
