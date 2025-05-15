@@ -3,7 +3,7 @@ const express = require('express')
 
 module.exports = function (router) {
     router.post('/login', async (req, res) => {
-        const { email, senha } = req.body
+        const { email, password } = req.body
 
         const user = await User.findOne({ email })
 
@@ -12,7 +12,7 @@ module.exports = function (router) {
         }
 
 
-        if (senha !== user.password) {
+        if (password !== user.password) {
             return res.status(401).json({ error: 'Usuario não encontrado' })
         }
 
