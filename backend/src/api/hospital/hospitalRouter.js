@@ -27,10 +27,27 @@ router.post('/', async (req, res) => {
 
   }
   catch (error) {
-    console.log(error);
 
     res.status(500).json({ erro: 'Erro ao salvar dados' })
   }
 })
+
+router.get('/volunteers', async (req, res) => {
+  try {
+    const volunteers = await prisma.user.findMany({
+      where: {
+        applications: {
+          some: {
+            status: 'Approved'
+          }
+        }
+      }
+    });
+    res.status(200).json(volunteers);
+  } catch (error) {
+    res.status(500).json({ erro: 'Erro ao encontrar voluntarios' });
+  }
+});
+
 
 module.exports = router;

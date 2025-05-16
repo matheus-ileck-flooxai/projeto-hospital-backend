@@ -1,8 +1,9 @@
 const express = require('express');
 
 const usersRouter = require('../api/user/userRouter');
-const hospitalRounter = require ('../api/hospital/userRouter')
+const hospitalRounter = require ('../api/hospital/hospitalRouter')
 const authRouter = require('../api/auth/authService')
+const vacancyRoute = require('../api/vacancy/vacancyRoute')
 
 module.exports = function (server) {
   const router = express.Router();
@@ -17,5 +18,7 @@ module.exports = function (server) {
   router.use('/hospital', hospitalRounter);
 
   router.use('/login', authRouter)
+
+  router.use('/vacancies', vacancyRoute)
 
 };
