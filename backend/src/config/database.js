@@ -1,3 +1,13 @@
-const mongoose = require('mongoose')
-mongoose.Promise = global.Promise
-module.exports = mongoose.connect('mongodb://localhost/ProjetoHospital')
+const mysql = require('mysql2')
+
+
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',  
+  password: 'Zedao123@',  
+  database: 'hospital'  
+});
+
+
+
+module.exports = connection;

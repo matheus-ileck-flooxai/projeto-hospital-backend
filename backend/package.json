@@ -10,9 +10,9 @@
   "author": "Matheus Ileck Farias",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "1.15.2",
-    "express": "4.14.0",
-    "mongoose": "4.7.0",
+    "@prisma/client": "^6.8.1",
+    "express": "4.19.2",
+    "mysql2": "^3.14.1",
     "node-restful": "0.2.6",
     "pm2": "2.1.5"
   },

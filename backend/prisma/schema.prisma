@@ -1,0 +1,71 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Hospital {
+  id        Int       @id @default(autoincrement())
+  name      String
+  address   String
+  email     String    @unique
+  password  String
+
+  users      User[]
+  vacancies  Vacancy[]
+}
+
+model User {
+  id           Int        @id @default(autoincrement())
+  email        String     @unique
+  password     String
+  name         String
+  age          DateTime
+  role         Role
+  score        Int        @default(0)
+  phone_number String
+  hospitalId   Int?
+  hospital     Hospital?  @relation(fields: [hospitalId], references: [id])
+
+  applications Application[]
+  vacancies    Vacancy[]
+}
+
+model Vacancy {
+  id            Int        @id @default(autoincrement())
+  title         String
+  description   String
+  schedule      DateTime
+  qtd_volunteer Int
+  score         Int        @default(0)
+  userId        Int
+  hospitalId    Int
+  user          User       @relation(fields: [userId], references: [id])
+  hospital      Hospital   @relation(fields: [hospitalId], references: [id])
+
+  applications  Application[]
+}
+
+model Application {
+  id          Int               @id @default(autoincrement())
+  userId      Int
+  vacancyId   Int
+  status      ApplicationStatus
+
+  user        User              @relation(fields: [userId], references: [id])
+  vacancy     Vacancy           @relation(fields: [vacancyId], references: [id])
+}
+
+enum Role {
+  Admin
+  Volunteer
+}
+
+enum ApplicationStatus {
+  Pending
+  Approved
+  Rejected
+}
