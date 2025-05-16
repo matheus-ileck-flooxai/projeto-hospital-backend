@@ -12,11 +12,11 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/', async (req,res)=>{
-  try{
+router.post('/', async (req, res) => {
+  try {
     const { name, address, email, password } = req.body
     const newHospital = await prisma.hospital.create({
-      data:{
+      data: {
         name,
         email,
         address,
@@ -26,10 +26,10 @@ router.post('/', async (req,res)=>{
     res.status(201).json(newHospital)
 
   }
-  catch( error){
+  catch (error) {
     console.log(error);
-    
-    res.status(500).json({erro: 'Erro ao salvar dados'})
+
+    res.status(500).json({ erro: 'Erro ao salvar dados' })
   }
 })
 
