@@ -1,25 +1,19 @@
-const express = require('express')
+const express = require('express');
+
+const usersRouter = require('../api/user/userRouter');
+const hospitalRounter = require ('../api/hospital/hospital')
 
 module.exports = function (server) {
-
-    //API
-    const router = express.Router()
-    server.use('/api', router)
+  const router = express.Router();
 
 
+  server.use('/api', router);
+
+  //rota de usuarios
+  router.use('/users', usersRouter);
+
+  //rota de hospitais
+  router.use('/hospital', hospitalRounter);
 
 
-    //Hospital
-    const hospitalService = require('../api/hospital/hospitalService')
-    hospitalService.register(router, '/hospital')
-
-
-    //User
-    const userService = require('../api/user/userService')
-    userService.register(router, '/user')
-
-    //Rota pra login
-    const authService = require('../api/auth/authService')
-    authService(router)
-
-}
+};
