@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "Matheus Ileck Farias",
