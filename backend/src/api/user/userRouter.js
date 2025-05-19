@@ -8,6 +8,8 @@ router.get('/', async (req, res) => {
     const users = await prisma.user.findMany();
     res.json(users);
   } catch (error) {
+    console.log(error);
+    
     res.status(500).json({ error: 'Erro ao encontrar usuários' });
   }
 });
