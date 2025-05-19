@@ -2,10 +2,9 @@ FROM node:18
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY . .
+
 RUN npm install
 
-COPY prisma ./prisma
-COPY . .
 
 CMD ["sh", "-c", "npx prisma generate && npm run dev"]
