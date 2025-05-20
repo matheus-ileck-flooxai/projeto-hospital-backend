@@ -10,7 +10,7 @@ router.post('/', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        
+ 
         const hospital = await prisma.hospital.findUnique({
             where: { email }
         });

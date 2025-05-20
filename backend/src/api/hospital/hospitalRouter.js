@@ -37,13 +37,14 @@ router.get('/users', async (req, res) => {
   try {
     const volunteers = await prisma.user.findMany({
       where: {
-        hospitalId: {
-        }
+        hospitalId: 1
       }
     });
     res.status(200).json(volunteers);
   } catch (error) {
-    res.status(500).json({ erro: 'Erro ao encontrar voluntarios' });
+    console.log(error);
+    
+    res.status(500).json({ erro: 'Erro ao encontrar usuarios' });
   }
 });
 
