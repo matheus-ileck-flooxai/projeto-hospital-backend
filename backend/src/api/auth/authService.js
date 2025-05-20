@@ -10,15 +10,17 @@ router.post('/', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-
+        
         const hospital = await prisma.hospital.findUnique({
             where: { email }
         });
 
+        
         if (!hospital || hospital.password !== password)
             return res.status(401).json({ error: 'Dados incorretos' });
 
         const token = jwt.sign(
+            
             { hospitalId: hospital.id }, process.env.JWT_TOKEN, {expiresIn: '2hr'})
 
         
@@ -26,7 +28,9 @@ router.post('/', async (req, res) => {
         return res.json({ token });
 
     } catch (error) {
-        res.status(500).json({ error: 'Erro ao fazer login' });
+
+        
+        res.status(500).json({ error});
     }
 });
 
