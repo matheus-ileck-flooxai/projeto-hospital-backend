@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const {name, email, password, age, role, score, phone_number} = req.body
+    const {name, email, password, age, role, score, phone_number, hospitalId} = req.body
       const newUser = await prisma.user.create({
       data: {
         name,
@@ -26,13 +26,14 @@ router.post('/', async (req, res) => {
         role,
         score,
         phone_number,
+        hospitalId
       },
     });
     res.status(201).json(newUser)
-  } catch (error) {
-    console.log(error);
     
-    res.status(500).json({ error: 'Erro ao cadastrar novo usuários' });
+  } catch (error) {
+    
+    res.status(500).json({ error: 'Erro ao cadastrar novo usuário' });
   }
 });
 

@@ -42,7 +42,6 @@ router.get('/users', async (req, res) => {
     });
     res.status(200).json(volunteers);
   } catch (error) {
-    console.log(error);
     
     res.status(500).json({ erro: 'Erro ao encontrar usuarios' });
   }
