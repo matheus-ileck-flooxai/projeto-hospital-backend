@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
         description,
         schedule,
         qtd_volunteer: parseInt(qtd_volunteer),
-        score: parseInt(score),
+        score:  parseInt(score),
         userId: parseInt(userId),
         hospitalId: parseInt(hospitalId),
 
@@ -28,7 +28,8 @@ router.post('/', async (req, res) => {
     })
     res.status(201).json({ message: 'Vaga criada com sucesso', newVacancy });
   } catch (error) {
-
+    console.log(error);
+    
     res.status(500).json({ error: 'Erro ao criar nova vaga' });
   }
 });

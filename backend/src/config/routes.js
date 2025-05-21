@@ -12,13 +12,13 @@ module.exports = function (server) {
   server.use('/api', router);
 
   //rota de usuarios
-  router.use('/users', usersRouter);
+  router.use('/users',jwt, usersRouter);
 
   //rota de hospitais
   router.use('/hospital',jwt, hospitalRounter);
 
   router.use('/login', authRouter)
 
-  router.use('/vacancies', vacancyRoute)
+  router.use('/vacancies',jwt, vacancyRoute)
 
 };
