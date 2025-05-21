@@ -6,10 +6,10 @@ const prisma = new PrismaClient();
 router.get('/', async (req, res) => {
   try {
     const users = await prisma.user.findMany();
-    res.json(users);
+    res.status(302).json(users);
   } catch (error) {
 
-    res.status(500).json({ error: 'Erro ao encontrar usuários' });
+    res.status(404).json({ error: 'Erro ao encontrar usuários' });
   }
 });
 
@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
 
   } catch (error) {
 
-    res.status(500).json({ error: 'Erro ao cadastrar novo usuário' });
+    res.status(417).json({ error: 'Erro ao cadastrar novo usuário' });
   }
 });
 

@@ -33,6 +33,21 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.delete('/:id', async (req, res) => {
+   try {
+    const { id } = req.params
 
+    await prisma.vacancy.delete({
+      where: {
+        id: +id
+      }
+    })
+    res.status(200).json({ message: 'Vaga removida com sucesso!' });
+
+  } catch (error) {
+
+    res.status(500).json({ error: 'Erro ao remover vaga' });
+  }
+});
 
 module.exports = router;
