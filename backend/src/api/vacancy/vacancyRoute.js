@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
 
       }
     })
-    res.json( {message: 'Vaga criada com sucesso', newVacancy});
+    res.status(201).json({ message: 'Vaga criada com sucesso', newVacancy });
   } catch (error) {
 
     res.status(500).json({ error: 'Erro ao criar nova vaga' });
@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
-   try {
+  try {
     const { id } = req.params
 
     await prisma.vacancy.delete({
@@ -47,6 +47,33 @@ router.delete('/:id', async (req, res) => {
   } catch (error) {
 
     res.status(500).json({ error: 'Erro ao remover vaga' });
+  }
+});
+
+router.put('/:id', async (req, res) => {
+  try {
+    const { title, description, schedule, qtd_volunteer, score, userId, hospitalId } = req.body
+
+    const { id } = req.params
+
+    const newVacancy = await prisma.vacancy.update({
+      data: {
+        title,
+        description,
+        schedule,
+        qtd_volunteer: parseInt(qtd_volunteer),
+        score: parseInt(score),
+        userId: parseInt(userId),
+        hospitalId: parseInt(hospitalId),
+      },
+      where: {
+        id: +id
+      }
+    })
+    res.status(200).json({ message: 'Vaga atualizada com sucesso', newVacancy });
+  } catch (error) {
+
+    res.status(500).json({ error: 'Erro ao atualizar vaga' });
   }
 });
 
