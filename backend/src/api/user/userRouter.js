@@ -8,7 +8,6 @@ router.get('/', async (req, res) => {
     const users = await prisma.user.findMany();
     res.json(users);
   } catch (error) {
-    console.log(error);
 
     res.status(500).json({ error: 'Erro ao encontrar usuários' });
   }
@@ -39,10 +38,10 @@ router.post('/', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   try {
-    const {id} = req.params
+    const { id } = req.params
 
     await prisma.user.delete({
-      where:{
+      where: {
         id: +id
       }
     })
@@ -51,6 +50,33 @@ router.delete('/:id', async (req, res) => {
   } catch (error) {
 
     res.status(500).json({ error: 'Erro ao deletar usuário' });
+  }
+})
+
+router.put('/:id', async (req, res) => {
+  try {
+    const { name, email, age, role, score, phone_number, hospitalId } = req.body
+    const id = parseInt(req.params.id);
+
+      const updatedUser = await prisma.user.update({
+       data: {
+        name,
+        email,
+        age,
+        role,
+        score,
+        phone_number,
+        hospitalId
+      },
+      where: {
+        id: +id
+      }
+    })
+    res.status(200).json({ message: 'Usuario atualizado com sucesso!' });
+
+  } catch (error) {
+    
+    res.status(500).json({ error: 'Erro ao atualizar usuário' });
   }
 })
 
