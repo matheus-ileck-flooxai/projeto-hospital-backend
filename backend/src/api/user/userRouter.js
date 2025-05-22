@@ -5,10 +5,16 @@ const prisma = new PrismaClient();
 
 router.get('/', async (req, res) => {
   try {
-    const users = await prisma.user.findMany();
-    res.status(302).json(users);
-  } catch (error) {
+    const hospitalId = req.user.hospitalId;
+    const users = await prisma.user.findMany({
+      where: { hospitalId },
+      select: { id: true, name: true, email: true, phone_number:true }
+    });
 
+    res.status(200).json(users);
+  } catch (error) {
+    console.log(error);
+    
     res.status(404).json({ error: 'Erro ao encontrar usuários' });
   }
 });
@@ -58,8 +64,8 @@ router.put('/:id', async (req, res) => {
     const { name, email, age, role, score, phone_number, hospitalId } = req.body
     const id = parseInt(req.params.id);
 
-      const updatedUser = await prisma.user.update({
-       data: {
+    const updatedUser = await prisma.user.update({
+      data: {
         name,
         email,
         age,
@@ -75,7 +81,7 @@ router.put('/:id', async (req, res) => {
     res.status(200).json({ message: 'Usuario atualizado com sucesso!' });
 
   } catch (error) {
-    
+
     res.status(500).json({ error: 'Erro ao atualizar usuário' });
   }
 })

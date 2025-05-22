@@ -1,16 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken')
+
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-router.get('/', async (req, res) => {
-  try {
-    const hospital = await prisma.hospital.findMany();
-    res.json(hospital);
-  } catch (error) {
-    res.status(500).json({ error: 'Erro ao encontrar hospitais' });
-  }
-});
+
 
 router.post('/', async (req, res) => {
   try {
@@ -36,12 +31,13 @@ router.post('/', async (req, res) => {
 
 router.get('/users', async (req, res) => {
   try {
+    
     const hospitalId = req.user.hospitalId;
 
 
     const users = await prisma.user.findMany({
       where: {
-        hospitalId: +hospitalId
+        hospitalId: + hospitalId
       }
     });
     res.status(200).json(users);
@@ -58,7 +54,7 @@ router.get('/vacancies', async (req, res) => {
 
     const vacancies = await prisma.vacancy.findMany({
       where: {
-        hospitalId: hospitalId
+        hospitalId: +hospitalId
       }
     });
     res.json(vacancies);

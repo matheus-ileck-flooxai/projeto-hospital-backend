@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "dev": "nodemon",
-    "postinstall": "npx prisma generate"
+    "postinstall": "npx prisma generate",
+    "swagger": "node ./src/config/swagger.js"
   },
   "keywords": [],
   "author": "Matheus Ileck Farias",
@@ -17,7 +18,9 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.14.1",
     "node-restful": "0.2.6",
-    "pm2": "2.1.5"
+    "pm2": "2.1.5",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "nodemon": "1.11.0"
