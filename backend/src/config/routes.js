@@ -18,7 +18,7 @@ module.exports = function (server) {
 
   
 
-
+//login hospital
 router.post('/hospital/login', async (req, res) => {
   const jwt = require('jsonwebtoken')
 
@@ -37,6 +37,38 @@ router.post('/hospital/login', async (req, res) => {
     const token = jwt.sign(
 
       { hospitalId: hospital.id, name: hospital.name }, process.env.JWT_TOKEN, { expiresIn: '2hr' })
+
+
+
+    return res.json({ token });
+
+  } catch (error) {
+
+
+    res.status(500).json({ error });
+  }
+});
+
+
+//login usuario
+router.post('/user/login', async (req, res) => {
+  const jwt = require('jsonwebtoken')
+
+  const { email, password } = req.body;
+
+  try {
+
+    const user = await prisma.user.findUnique({
+      where: { email }
+    });
+
+
+    if (!user || user.password !== password || user.role !== 'Admin' ) 
+      return res.status(401).json({ error: 'Dados incorretos' });
+
+    const token = jwt.sign(
+
+      { hospitalId: user.hospitalId, userid: user.id ,name: user.name}, process.env.JWT_TOKEN, { expiresIn: '2hr' })
 
 
 

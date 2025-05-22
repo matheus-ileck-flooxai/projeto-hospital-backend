@@ -10,8 +10,8 @@ router.get('/', async (req, res) => {
     const vacancies = await prisma.vacancy.findMany({
       include: {
         applications: {
-          where:{
-            status:'Approved'
+          where: {
+            status: 'Approved'
           },
           select: {
             userId: true
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
       },
       where: {
         hospitalId
-        
+
       }
     });
     res.json(vacancies);
@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
 });
 router.post('/', async (req, res) => {
   try {
-    const { title, description, schedule, qtd_volunteer, score, userId, hospitalId } = req.body
+    const { title, description, schedule, qtd_volunteer, score, userId = null, hospitalId } = req.body
     const newVacancy = await prisma.vacancy.create({
       data: {
         title,
@@ -38,14 +38,16 @@ router.post('/', async (req, res) => {
         schedule,
         qtd_volunteer: parseInt(qtd_volunteer),
         score: parseInt(score),
-        userId: parseInt(userId),
+        userId: userId,
         hospitalId: parseInt(hospitalId),
 
       }
     })
     res.status(201).json({ message: 'Vaga criada com sucesso', newVacancy });
   } catch (error) {
-  
+
+    console.log(error);
+
 
     res.status(500).json({ error: 'Erro ao criar nova vaga' });
   }
@@ -54,6 +56,12 @@ router.post('/', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params
+
+    await prisma.application.deleteMany({
+      where: {
+        vacancyId: +id
+      }
+    });
 
     await prisma.vacancy.delete({
       where: {
@@ -64,6 +72,8 @@ router.delete('/:id', async (req, res) => {
 
   } catch (error) {
 
+    console.log(error);
+    
     res.status(500).json({ error: 'Erro ao remover vaga' });
   }
 });
@@ -118,7 +128,7 @@ router.delete('/:id/conclude', async (req, res) => {
     res.status(200).json({ message: 'Vaga concluida com sucesso' });
 
   } catch (error) {
-  
+
 
 
     res.status(500).json({ error: 'Erro ao remover vaga' });

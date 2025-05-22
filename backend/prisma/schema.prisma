@@ -41,9 +41,9 @@ model Vacancy {
   schedule      DateTime
   qtd_volunteer Int
   score         Int        @default(0)
-  userId        Int
+  userId        Int? 
   hospitalId    Int
-  user          User       @relation(fields: [userId], references: [id])
+  user          User?      @relation(fields: [userId], references: [id])
   hospital      Hospital   @relation(fields: [hospitalId], references: [id])
 
   applications  Application[]

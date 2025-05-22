@@ -54,7 +54,8 @@ router.delete('/:id', async (req, res) => {
     res.status(200).json({ message: 'Usuario deletado com sucesso!' });
 
   } catch (error) {
-
+    console.log(error);
+    
     res.status(500).json({ error: 'Erro ao deletar usuário' });
   }
 })
@@ -81,7 +82,7 @@ router.put('/:id', async (req, res) => {
     res.status(200).json({ message: 'Usuario atualizado com sucesso!' });
 
   } catch (error) {
-
+    
     res.status(500).json({ error: 'Erro ao atualizar usuário' });
   }
 })
