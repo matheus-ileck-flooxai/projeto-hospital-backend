@@ -4,6 +4,7 @@ const usersRouter = require('../api/user/userRouter');
 const hospitalRounter = require('../api/hospital/hospitalRouter')
 const authRouter = require('../api/auth/authService')
 const vacancyRouter = require('../api/vacancy/vacancyRouter')
+const applicationRouter = require('../api/application/applicationRouter')
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -88,8 +89,10 @@ router.post('/hospital/register', async (req, res) => {
   //rota de hospitais
   router.use('/hospital', jwt, hospitalRounter);
 
-  //router.use('/login', authRouter)
-
+  //rota de vagas
   router.use('/vacancies', jwt, vacancyRouter)
+
+  //rota de pedidos
+  router.use('/applications', jwt, applicationRouter)
 
 };

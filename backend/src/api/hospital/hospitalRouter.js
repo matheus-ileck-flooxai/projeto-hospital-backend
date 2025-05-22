@@ -29,56 +29,5 @@ router.post('/', async (req, res) => {
 })
 
 
-router.get('/users', async (req, res) => {
-  try {
-    
-    const hospitalId = req.user.hospitalId;
-
-
-    const users = await prisma.user.findMany({
-      where: {
-        hospitalId: + hospitalId
-      }
-    });
-    res.status(200).json(users);
-  } catch (error) {
-    console.log(error);
-
-    res.status(500).json({ erro: 'Erro ao encontrar usuarios' });
-  }
-});
-
-router.get('/vacancies', async (req, res) => {
-  try {
-    const hospitalId = req.user.hospitalId;
-
-    const vacancies = await prisma.vacancy.findMany({
-      where: {
-        hospitalId: +hospitalId
-      }
-    });
-    res.json(vacancies);
-  } catch (error) {
-    res.status(500).json({ error: 'Erro ao encontrar vagas' });
-  }
-});
-
-router.get('/volunteers', async (req, res) => {
-  try {
-    const volunteers = await prisma.user.findMany({
-      where: {
-        applications: {
-          some: {
-            status: 'Approved'
-          }
-        }
-      }
-    });
-    res.status(200).json(volunteers);
-  } catch (error) {
-    res.status(500).json({ erro: 'Erro ao encontrar voluntarios' });
-  }
-});
-
 
 module.exports = router;
