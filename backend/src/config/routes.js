@@ -73,7 +73,7 @@ router.post('/hospital/register', async (req, res) => {
     res.status(201).json({ newHospital });
 
   } catch (error) {
-    console.log(error);
+  
 
 
     res.status(500).json({ error });

@@ -10,6 +10,9 @@ router.get('/', async (req, res) => {
     const vacancies = await prisma.vacancy.findMany({
       include: {
         applications: {
+          where:{
+            status:'Approved'
+          },
           select: {
             userId: true
           }
@@ -17,6 +20,7 @@ router.get('/', async (req, res) => {
       },
       where: {
         hospitalId
+        
       }
     });
     res.json(vacancies);
@@ -41,7 +45,7 @@ router.post('/', async (req, res) => {
     })
     res.status(201).json({ message: 'Vaga criada com sucesso', newVacancy });
   } catch (error) {
-    console.log(error);
+  
 
     res.status(500).json({ error: 'Erro ao criar nova vaga' });
   }
@@ -114,7 +118,7 @@ router.delete('/:id/conclude', async (req, res) => {
     res.status(200).json({ message: 'Vaga concluida com sucesso' });
 
   } catch (error) {
-    console.log(error);
+  
 
 
     res.status(500).json({ error: 'Erro ao remover vaga' });

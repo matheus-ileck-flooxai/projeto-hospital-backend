@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
 
     res.status(200).json(users);
   } catch (error) {
-    console.log(error);
+  
     
     res.status(404).json({ error: 'Erro ao encontrar usuários' });
   }

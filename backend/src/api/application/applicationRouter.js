@@ -7,6 +7,7 @@ const prisma = new PrismaClient();
 router.get('/', async (req, res) => {
     try {
         const hospitalId = req.user.hospitalId;
+        
         const applications = await prisma.application.findMany({
 
             include: {
@@ -38,7 +39,7 @@ router.get('/', async (req, res) => {
 
         res.status(200).json(applications);
     } catch (error) {
-        console.log(error);
+      
 
         res.status(404).json({ error: 'Erro ao encontrar pedidos' });
     }
@@ -85,19 +86,21 @@ router.put('/:id', async (req, res) => {
     const hospitalId = req.user.hospitalId;
     try {
         const { id } = req.params
+        
 
         await prisma.application.update({
             data:{
                 status: 'Approved'
             },
             where: {
-                id: + id
+                id: +id
             }
         })
         res.status(200).json({ message: 'Pedido atualizado com sucesso.' });
 
     } catch (error) {
-        console.log(error);
+  
+      
         
 
         res.status(500).json({ error: 'Erro ao atualizar pedido' });

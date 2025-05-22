@@ -14,7 +14,7 @@ server.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 
 server.listen(port, function () {
-    console.log(`Backend is running on port ${port}`);
+    (`Backend is running on port ${port}`);
 
 })
 
