@@ -2,9 +2,9 @@ const express = require('express');
 const jwt = require('./jwt')
 const usersRouter = require('../api/user/userRouter');
 const hospitalRounter = require('../api/hospital/hospitalRouter')
-const authRouter = require('../api/auth/authService')
 const vacancyRouter = require('../api/vacancy/vacancyRouter')
 const applicationRouter = require('../api/application/applicationRouter')
+const volunterRouter = require('../api/volunteer/volunterRouter')
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -16,105 +16,123 @@ module.exports = function (server) {
 
   server.use('/api', router);
 
-  
-
-//login hospital
-router.post('/hospital/login', async (req, res) => {
-  const jwt = require('jsonwebtoken')
-
-  const { email, password } = req.body;
-
-  try {
-
-    const hospital = await prisma.hospital.findUnique({
-      where: { email }
-    });
 
 
-    if (!hospital || hospital.password !== password)
-      return res.status(401).json({ error: 'Dados incorretos' });
+  //login hospital
+  router.post('/hospital/login', async (req, res) => {
+    const jwt = require('jsonwebtoken')
 
-    const token = jwt.sign(
+    const { email, password } = req.body;
 
-      { hospitalId: hospital.id, name: hospital.name }, process.env.JWT_TOKEN, { expiresIn: '2hr' })
+    try {
 
-
-
-    return res.json({ token });
-
-  } catch (error) {
-
-
-    res.status(500).json({ error });
-  }
-});
+      const hospital = await prisma.hospital.findUnique({
+        where: { email }
+      });
 
 
-//login usuario
-router.post('/user/login', async (req, res) => {
-  const jwt = require('jsonwebtoken')
+      if (!hospital || hospital.password !== password)
+        return res.status(401).json({ error: 'Dados incorretos' });
 
-  const { email, password } = req.body;
+      const token = jwt.sign(
 
-  try {
-
-    const user = await prisma.user.findUnique({
-      where: { email }
-    });
-
-
-    if (!user || user.password !== password || user.role !== 'Admin' ) 
-      return res.status(401).json({ error: 'Dados incorretos' });
-
-    const token = jwt.sign(
-
-      { hospitalId: user.hospitalId, userid: user.id ,name: user.name}, process.env.JWT_TOKEN, { expiresIn: '2hr' })
+        { hospitalId: hospital.id, name: hospital.name }, process.env.JWT_TOKEN, { expiresIn: '2hr' })
 
 
 
-    return res.json({ token });
+      return res.json({ token });
 
-  } catch (error) {
+    } catch (error) {
 
 
-    res.status(500).json({ error });
-  }
-});
-
-router.post('/hospital/register', async (req, res) => {
-  try {
-
-    const { name, address, email, password } = req.body
-    
-    const hospital = await prisma.hospital.findUnique({
-      where: { email }
-    });
-    if (hospital) {
-      return res.status(400).json({ error: 'Email indisponivel' })
+      res.status(500).json({ error });
     }
+  });
+  router.post('/hospital/register', async (req, res) => {
+    try {
 
-    const newHospital = await prisma.hospital.create({
-      data: {
-        name,
-        address,
-        email,
-        password
+      const { name, address, owner_email, password, phone_number } = req.body
+
+
+      const hospital = await prisma.hospital.findUnique({
+        where: { owner_email }
+      });
+
+      if (hospital) {
+        return res.status(400).json({ error: 'Email indisponivel' })
       }
-    })
-    
-    res.status(201).json({ newHospital });
 
-  } catch (error) {
-  
+        const newHospital = await prisma.hospital.create({
+        data: {
+          name,
+          address,
+          owner_email
+        }
+      })
 
 
-    res.status(500).json({ error });
-  }
-});
+      const user = await prisma.user.create({
+              data: {
+                name,
+                email: owner_email,
+                password,
+                age: new Date(),
+                role: 'Admin',
+                score: 0,
+                phone_number,
+                hospitalId: newHospital.id
 
- 
+              }
+            })
 
- 
+
+      res.status(201).json({ newHospital, user });
+
+    } catch (error) {
+      console.log(error);
+      
+
+
+      res.status(500).json({ error });
+    }
+  });
+
+  //login usuario
+  router.post('/user/login', async (req, res) => {
+    const jwt = require('jsonwebtoken')
+
+    const { email, password } = req.body;
+
+    try {
+
+      const user = await prisma.user.findUnique({
+        where: { email }
+      });
+
+
+      if (!user || user.password !== password || user.role !== 'Admin')
+        return res.status(401).json({ error: 'Dados incorretos' });
+
+      const token = jwt.sign(
+
+        { hospitalId: user.hospitalId, userid: user.id, name: user.name }, process.env.JWT_TOKEN, { expiresIn: '2hr' })
+
+
+
+      return res.json({ token });
+
+    } catch (error) {
+
+
+      res.status(500).json({ error });
+    }
+  });
+
+
+
+
+
+  router.use('/volunteers', volunterRouter)
   //rota de usuarios
   router.use('/users', jwt, usersRouter);
 
