@@ -26,8 +26,8 @@ module.exports = function (server) {
 
     try {
 
-      const hospital = await prisma.hospital.findUnique({
-        where: { email }
+      const user = await prisma.user.findUnique({
+        where: { email: email }
       });
 
 
@@ -36,14 +36,15 @@ module.exports = function (server) {
 
       const token = jwt.sign(
 
-        { hospitalId: hospital.id, name: hospital.name }, process.env.JWT_TOKEN, { expiresIn: '2hr' })
-
+        { hospitalId: user.hospitalId, name: hospital.name }, process.env.JWT_TOKEN, { expiresIn: '2hr' })
+        
 
 
       return res.json({ token });
 
     } catch (error) {
 
+      
 
       res.status(500).json({ error });
     }
@@ -51,11 +52,11 @@ module.exports = function (server) {
   router.post('/hospital/register', async (req, res) => {
     try {
 
-      const { name, address, owner_email, password, phone_number } = req.body
+      const { name, address, email, password, phone_number } = req.body
 
-
+      
       const hospital = await prisma.hospital.findUnique({
-        where: { owner_email }
+        where: { owner_email: email }
       });
 
       if (hospital) {
@@ -66,15 +67,15 @@ module.exports = function (server) {
         data: {
           name,
           address,
-          owner_email
+          owner_email: email
         }
       })
 
-
+      
       const user = await prisma.user.create({
               data: {
                 name,
-                email: owner_email,
+                email,
                 password,
                 age: new Date(),
                 role: 'Admin',
@@ -89,7 +90,6 @@ module.exports = function (server) {
       res.status(201).json({ newHospital, user });
 
     } catch (error) {
-      console.log(error);
       
 
 
@@ -130,7 +130,27 @@ module.exports = function (server) {
 
 
 
+router.get('/vacancies', async (req, res) => {
+  try {
 
+    const vacancies = await prisma.vacancy.findMany({
+      include: {
+        applications: {
+          where: {
+            status: 'Approved'
+          },
+          select: {
+            userId: true
+          }
+        }
+      },
+   
+    });
+    res.json(vacancies);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao encontrar vagas' });
+  }
+});
 
   router.use('/volunteers', volunterRouter)
   //rota de usuarios

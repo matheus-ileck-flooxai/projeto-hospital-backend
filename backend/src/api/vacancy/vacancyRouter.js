@@ -3,31 +3,7 @@ const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-router.get('/', async (req, res) => {
-  try {
-    const hospitalId = req.user.hospitalId;
 
-    const vacancies = await prisma.vacancy.findMany({
-      include: {
-        applications: {
-          where: {
-            status: 'Approved'
-          },
-          select: {
-            userId: true
-          }
-        }
-      },
-      where: {
-        hospitalId
-
-      }
-    });
-    res.json(vacancies);
-  } catch (error) {
-    res.status(500).json({ error: 'Erro ao encontrar vagas' });
-  }
-});
 router.post('/', async (req, res) => {
   try {
     const { title, description, schedule, qtd_volunteer, score, userId = null, hospitalId } = req.body
@@ -46,7 +22,6 @@ router.post('/', async (req, res) => {
     res.status(201).json({ message: 'Vaga criada com sucesso', newVacancy });
   } catch (error) {
 
-    console.log(error);
 
 
     res.status(500).json({ error: 'Erro ao criar nova vaga' });
@@ -72,7 +47,6 @@ router.delete('/:id', async (req, res) => {
 
   } catch (error) {
 
-    console.log(error);
     
     res.status(500).json({ error: 'Erro ao remover vaga' });
   }

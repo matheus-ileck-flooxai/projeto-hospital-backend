@@ -5,9 +5,7 @@ const prisma = new PrismaClient();
 
 router.get('/', async (req, res) => {
   try {
-    const hospitalId = req.user.hospitalId;
     const users = await prisma.user.findMany({
-      where: { hospitalId },
       select: { id: true, name: true, email: true, phone_number:true }
     });
 
@@ -37,6 +35,7 @@ router.post('/', async (req, res) => {
     res.status(201).json(newUser)
 
   } catch (error) {
+    
 
     res.status(417).json({ error: 'Erro ao cadastrar novo usuário' });
   }
@@ -54,7 +53,6 @@ router.delete('/:id', async (req, res) => {
     res.status(200).json({ message: 'Usuario deletado com sucesso!' });
 
   } catch (error) {
-    console.log(error);
     
     res.status(500).json({ error: 'Erro ao deletar usuário' });
   }
