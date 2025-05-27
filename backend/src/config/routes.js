@@ -1,13 +1,12 @@
 const express = require('express');
 const jwt = require('./jwt')
 const usersRouter = require('../api/user/userRouter');
-const hospitalRounter = require('../api/hospital/hospitalRouter')
+const hospitalRouter = require('../api/hospital/hospitalRouter')
 const vacancyRouter = require('../api/vacancy/vacancyRouter')
 const applicationRouter = require('../api/application/applicationRouter')
 const volunterRouter = require('../api/volunteer/volunterRouter')
+const prisma = require('./prisma');
 
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
 
 
 module.exports = function (server) {
@@ -18,13 +17,13 @@ module.exports = function (server) {
 
 
 
- 
+
   router.post('/hospital/register', async (req, res) => {
     try {
 
       const { name, address, email, password, phone_number } = req.body
 
-      
+
       const hospital = await prisma.hospital.findUnique({
         where: { owner_email: email }
       });
@@ -33,7 +32,7 @@ module.exports = function (server) {
         return res.status(400).json({ error: 'Email indisponivel' })
       }
 
-        const newHospital = await prisma.hospital.create({
+      const newHospital = await prisma.hospital.create({
         data: {
           name,
           address,
@@ -41,26 +40,26 @@ module.exports = function (server) {
         }
       })
 
-      
-      const user = await prisma.user.create({
-              data: {
-                name,
-                email,
-                password,
-                age: new Date(),
-                role: 'Admin',
-                score: 0,
-                phone_number,
-                hospitalId: newHospital.id
 
-              }
-            })
+      const user = await prisma.user.create({
+        data: {
+          name,
+          email,
+          password,
+          age: new Date(),
+          role: 'Admin',
+          score: 0,
+          phone_number,
+          hospitalId: newHospital.id
+
+        }
+      })
 
 
       res.status(201).json({ newHospital, user });
 
     } catch (error) {
-      
+
 
 
       res.status(500).json({ error });
@@ -80,16 +79,30 @@ module.exports = function (server) {
       });
 
 
-      if (!user || user.password !== password || user.role !== 'Admin')
+      if (!user || user.password !== password)
         return res.status(401).json({ error: 'Dados incorretos' });
 
-      const token = jwt.sign(
+      if (user.role !== 'Admin') {
+        const token = jwt.sign(
 
-        { hospitalId: user.hospitalId, userid: user.id, name: user.name }, process.env.JWT_TOKEN, { expiresIn: '2hr' })
+          { userid: user.id, name: user.name, role: user.role }, process.env.JWT_TOKEN, { expiresIn: '2hr' })
 
 
 
-      return res.json({ token });
+        return res.json({ message: 'seja muito bem vindo', token });
+      }
+
+      else {
+
+        const token = jwt.sign(
+
+          { hospitalId: user.hospitalId, userid: user.id, name: user.name, role: user.role }, process.env.JWT_TOKEN, { expiresIn: '2hr' })
+
+
+
+        return res.json({ message: 'seja muito bem vindo', token });
+      }
+
 
     } catch (error) {
 
@@ -97,42 +110,94 @@ module.exports = function (server) {
       res.status(500).json({ error });
     }
   });
+  //cadastro de usuario (voluntario)
+  router.post('/user/register', async (req, res) => {
+    try {
+
+      const { name, email, password, age, role, score, phone_number } = req.body
+      const newUser = await prisma.user.create({
+        data: {
+          name,
+          email,
+          password,
+          age: new Date(age),
+          role,
+          score,
+          phone_number,
+          
+        },
+      });
+      res.status(201).json(newUser)
+
+    } catch (error) {
 
 
+      
+      res.status(417).json({ error: 'Erro ao cadastrar novo usuário' });
+    }
+  });
+  //vagas para voluntarios
+  router.get('/vacancies', async (req, res) => {
+    try {
+      const { userId } = req.query;
 
-router.get('/vacancies', async (req, res) => {
-  try {
+      let vacancies;
 
-    const vacancies = await prisma.vacancy.findMany({
-      include: {
-        applications: {
+      if (userId) {
+        vacancies = await prisma.vacancy.findMany({
           where: {
-            status: 'Approved'
+            applications: {
+              none: {
+                userId: +userId
+              }
+            }
           },
-          select: {
-            userId: true
+          include: {
+            applications: {
+              where: { status: 'Approved' },
+              select: { userId: true }
+            }
           }
-        }
-      },
-   
-    });
-    res.json(vacancies);
-  } catch (error) {
-    res.status(500).json({ error: 'Erro ao encontrar vagas' });
-  }
-});
+        });
+      } else {
+        vacancies = await prisma.vacancy.findMany({
+          include: {
+            applications: {
+              where: { status: 'Approved' },
+              select: { userId: true }
+            }
+          }
+        });
+      }
 
-  router.use('/volunteers', volunterRouter)
+      res.json(vacancies);
+
+    } catch (error) {
+      console.error('Erro ao encontrar vagas:', error);
+      res.status(500).json({ error: 'Erro ao encontrar vagas' });
+    }
+  });
+
+
+
+
+
+
+
   //rota de usuarios
-  router.use('/users', jwt, usersRouter);
+  router.use('/users', jwt('Admin'), usersRouter);
 
   //rota de hospitais
-  router.use('/hospital', jwt, hospitalRounter);
+  router.use('/hospital', jwt('Admin'), hospitalRouter);
+
 
   //rota de vagas
-  router.use('/vacancies', jwt, vacancyRouter)
+  router.use('/vacancies', jwt('Admin'), vacancyRouter)
 
   //rota de pedidos
-  router.use('/applications', jwt, applicationRouter)
+  router.use('/applications', jwt('Admin'), applicationRouter)
+
+  //rota de voluntarios
+  router.use('/volunteer', volunterRouter)
 
 };

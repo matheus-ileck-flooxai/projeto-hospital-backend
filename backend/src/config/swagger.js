@@ -5,7 +5,7 @@ const doc = {
     title: 'Api',
     description: 'Description'
   },
-  host: 'projeto-hospital-backend-production.up.railway.app',
+  host: 'https://projeto-hospital-backend-production.up.railway.app/',
   schemes: ['http'],
   securityDefinitions: {
     bearerAuth: {

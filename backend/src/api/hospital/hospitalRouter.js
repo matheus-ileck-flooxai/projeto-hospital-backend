@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken')
 
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../../config/prisma');
+
+
 
 
 
@@ -29,13 +30,14 @@ router.post('/', async (req, res) => {
 })
 router.get('/users', async (req, res) => {
   try {
+   
     const hospitalId = req.user.hospitalId;
     const users = await prisma.user.findMany({
       where: { hospitalId },
       select: { id: true, name: true, email: true, phone_number: true }
     });
 
-    
+
     res.status(200).json(users);
   } catch (error) {
 

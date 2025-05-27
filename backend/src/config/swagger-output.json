@@ -5,7 +5,7 @@
     "description": "Description",
     "version": "1.0.0"
   },
-  "host": "projeto-hospital-backend-production.up.railway.app",
+  "host": "http://localhost:3306",
   "basePath": "/",
   "schemes": [
     "http"
@@ -19,7 +19,7 @@
     }
   },
   "paths": {
-    "/api/hospital/login": {
+    "/api/hospital/register": {
       "post": {
         "description": "",
         "parameters": [
@@ -29,10 +29,19 @@
             "schema": {
               "type": "object",
               "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "address": {
+                  "example": "any"
+                },
                 "email": {
                   "example": "any"
                 },
                 "password": {
+                  "example": "any"
+                },
+                "phone_number": {
                   "example": "any"
                 }
               }
@@ -40,11 +49,11 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "201": {
+            "description": "Created"
           },
-          "401": {
-            "description": "Unauthorized"
+          "400": {
+            "description": "Bad Request"
           },
           "500": {
             "description": "Internal Server Error"
@@ -85,41 +94,12 @@
         }
       }
     },
-    "/api/hospital/register": {
-      "post": {
+    "/api/vacancies": {
+      "get": {
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "address": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
+          "200": {
+            "description": "OK"
           },
           "500": {
             "description": "Internal Server Error"
@@ -133,9 +113,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
           },
           "404": {
             "description": "Not Found"
@@ -183,9 +160,6 @@
           "201": {
             "description": "Created"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
           "417": {
             "description": "Expectation Failed"
           }
@@ -206,9 +180,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
           },
           "500": {
             "description": "Internal Server Error"
@@ -259,9 +230,6 @@
           "200": {
             "description": "OK"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -298,8 +266,31 @@
           "201": {
             "description": "Created"
           },
-          "401": {
-            "description": "Unauthorized"
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/hospital/users": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/hospital/vacancies": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
           },
           "500": {
             "description": "Internal Server Error"
@@ -308,20 +299,6 @@
       }
     },
     "/api/vacancies/": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
       "post": {
         "description": "",
         "parameters": [
@@ -360,9 +337,6 @@
           "201": {
             "description": "Created"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -383,9 +357,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
           },
           "500": {
             "description": "Internal Server Error"
@@ -436,9 +407,6 @@
           "200": {
             "description": "OK"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -460,9 +428,6 @@
           "200": {
             "description": "OK"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -475,9 +440,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
           },
           "404": {
             "description": "Not Found"
@@ -522,8 +484,21 @@
           "200": {
             "description": "OK"
           },
-          "401": {
-            "description": "Unauthorized"
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/volunteer/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"

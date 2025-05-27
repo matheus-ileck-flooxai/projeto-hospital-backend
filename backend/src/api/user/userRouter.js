@@ -1,24 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../../config/prisma');
+
+
 
 router.get('/', async (req, res) => {
   try {
+    
     const users = await prisma.user.findMany({
-      select: { id: true, name: true, email: true, phone_number:true }
+      select: { id: true, name: true, email: true, phone_number: true }
     });
 
     res.status(200).json(users);
   } catch (error) {
-  
-    
+
+
     res.status(404).json({ error: 'Erro ao encontrar usuários' });
   }
 });
 
 router.post('/', async (req, res) => {
   try {
+ 
     const { name, email, password, age, role, score, phone_number, hospitalId } = req.body
     const newUser = await prisma.user.create({
       data: {
@@ -35,7 +38,7 @@ router.post('/', async (req, res) => {
     res.status(201).json(newUser)
 
   } catch (error) {
-    
+
 
     res.status(417).json({ error: 'Erro ao cadastrar novo usuário' });
   }
@@ -53,7 +56,7 @@ router.delete('/:id', async (req, res) => {
     res.status(200).json({ message: 'Usuario deletado com sucesso!' });
 
   } catch (error) {
-    
+
     res.status(500).json({ error: 'Erro ao deletar usuário' });
   }
 })
@@ -80,7 +83,7 @@ router.put('/:id', async (req, res) => {
     res.status(200).json({ message: 'Usuario atualizado com sucesso!' });
 
   } catch (error) {
-    
+
     res.status(500).json({ error: 'Erro ao atualizar usuário' });
   }
 })

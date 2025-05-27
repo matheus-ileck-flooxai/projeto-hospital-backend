@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../../config/prisma');
+
+
 
 
 router.post('/', async (req, res) => {
@@ -67,10 +68,11 @@ router.delete('/:id/conclude', async (req, res) => {
         }
       },
       where: {
-        id: parseInt(id),
+        id: +id,
         hospitalId: hospitalId
       }
     });
+    
 
     await prisma.$transaction([
       ...vacancy.applications.map(application =>
@@ -82,7 +84,7 @@ router.delete('/:id/conclude', async (req, res) => {
             }
           }
         })
-      )]),
+      )])
 
       await prisma.application.deleteMany({
         where: {
