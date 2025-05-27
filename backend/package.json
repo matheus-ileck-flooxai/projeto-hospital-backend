@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "nodemon",
     "postinstall": "npx prisma generate",
-    "swagger": "node ./src/config/swagger.js"
+    "swagger": "node ./src/config/swagger.js",
+    "production": "pm2 start src/index.js --name backend"
+
   },
   "keywords": [],
   "author": "Matheus Ileck Farias",
