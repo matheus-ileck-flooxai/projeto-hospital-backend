@@ -15,9 +15,33 @@ router.get('/', async (req, res) => {
 
     res.json(vacancies);
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao encontrar vagas' });
+    res.status(500).json({ error: 'Erro ao encontrar voluntario' });
   }
 });
+
+router.get('/:id', async (req, res) => {
+  try {
+
+    userId = req.user.userid
+    
+    const user = await prisma.user.findFirst({
+      where: {
+        id: +userId
+      }
+
+    });
+
+    if (user == null) {
+      res.status(404).json({ error: 'Nenhum voluntario encontrado' })
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    
+    res.status(500).json({ error: 'Erro ao encontrar voluntario' });
+  }
+});
+
 
 
 router.post('/newapplication', async (req, res) => {

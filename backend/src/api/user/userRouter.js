@@ -39,8 +39,9 @@ router.post('/', async (req, res) => {
 
   } catch (error) {
 
-
-    res.status(417).json({ error: 'Erro ao cadastrar novo usuário' });
+    console.log(error);
+    
+    res.status(400).json({ error: 'Erro ao cadastrar novo usuário' });
   }
 });
 

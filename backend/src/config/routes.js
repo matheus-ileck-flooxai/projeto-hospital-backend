@@ -131,16 +131,17 @@ module.exports = function (server) {
 
     } catch (error) {
 
+    console.log(error);
 
       
-      res.status(417).json({ error: 'Erro ao cadastrar novo usuário' });
+      res.status(400).json({ error: 'Erro ao cadastrar novo usuário' });
     }
   });
   //vagas para voluntarios
   router.get('/vacancies', async (req, res) => {
     try {
       const { userId } = req.query;
-
+      
       let vacancies;
 
       if (userId) {
@@ -156,16 +157,26 @@ module.exports = function (server) {
             applications: {
               where: { status: 'Approved' },
               select: { userId: true }
+            },
+             hospital:{
+             
+              select:{ name:true, address: true}
             }
           }
         });
+        
       } else {
         vacancies = await prisma.vacancy.findMany({
           include: {
             applications: {
               where: { status: 'Approved' },
               select: { userId: true }
+            },
+            hospital:{
+             
+              select:{ name:true, address: true}
             }
+
           }
         });
       }
@@ -198,6 +209,6 @@ module.exports = function (server) {
   router.use('/applications', jwt('Admin'), applicationRouter)
 
   //rota de voluntarios
-  router.use('/volunteer', volunterRouter)
+  router.use('/volunteer', jwt('Volunteer'), volunterRouter)
 
 };
