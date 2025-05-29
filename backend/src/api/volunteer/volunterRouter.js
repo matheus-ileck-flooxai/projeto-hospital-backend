@@ -23,7 +23,7 @@ router.get('/:id', async (req, res) => {
   try {
 
     userId = req.user.userid
-    
+
     const user = await prisma.user.findFirst({
       where: {
         id: +userId
@@ -37,17 +37,41 @@ router.get('/:id', async (req, res) => {
 
     res.status(200).json(user);
   } catch (error) {
-    
+
     res.status(500).json({ error: 'Erro ao encontrar voluntario' });
   }
 });
 
+router.put('/:id', async (req, res) => {
+  try {
+    const { name, email, age, password,  phone_number,  } = req.body
+    const id = parseInt(req.params.id);
+
+    const updatedUser = await prisma.user.update({
+      data: {
+        name,
+        email,
+        age,
+        phone_number,
+        password
+      },
+      where: {
+        id: +id
+      }
+    })
+    res.status(200).json({ message: 'Usuario atualizado com sucesso!', updatedUser });
+
+  } catch (error) {
+
+    res.status(500).json({ error: 'Erro ao atualizar usuário' });
+  }
+})
 
 
 router.post('/newapplication', async (req, res) => {
 
   try {
-  const { userId, vacancyId } = req.body
+    const { userId, vacancyId } = req.body
 
 
     const application = await prisma.application.create({
@@ -57,14 +81,14 @@ router.post('/newapplication', async (req, res) => {
         status: "Pending"
       }
     })
-  
+
 
     res.status(201).json({ message: 'Pedido enviado com sucesso', application })
 
 
   }
   catch (error) {
-    
+
     res.status(500).json({ error: 'Erro ao se cadastrar na vaga' });
   }
 })
