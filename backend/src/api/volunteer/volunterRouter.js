@@ -24,12 +24,27 @@ router.get('/:id', async (req, res) => {
 
     userId = req.user.userid
 
-    const user = await prisma.user.findFirst({
-      where: {
-        id: +userId
+   const user = await prisma.user.findFirst({
+  where: { id: +userId },
+  include: {
+    applications: {
+      where: { status: 'Approved' },
+      include: {
+        vacancy: {
+          include: { 
+            hospital: {
+              select: {
+                name: true,
+                address: true,
+              }
+            }
+          }
+        }
       }
+    }
+  }
+});
 
-    });
 
     if (user == null) {
       res.status(404).json({ error: 'Nenhum voluntario encontrado' })
@@ -44,7 +59,7 @@ router.get('/:id', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   try {
-    const { name, email, age, password,  phone_number,  } = req.body
+    const { name, email, age, password, phone_number, } = req.body
     const id = parseInt(req.params.id);
 
     const updatedUser = await prisma.user.update({
