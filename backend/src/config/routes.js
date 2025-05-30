@@ -124,16 +124,16 @@ module.exports = function (server) {
           role,
           score,
           phone_number,
-          
+
         },
       });
       res.status(201).json(newUser)
 
     } catch (error) {
 
-    console.log(error);
+      console.log(error);
 
-      
+
       res.status(400).json({ error: 'Erro ao cadastrar novo usuário' });
     }
   });
@@ -141,7 +141,7 @@ module.exports = function (server) {
   router.get('/vacancies', async (req, res) => {
     try {
       const { userId } = req.query;
-      
+
       let vacancies;
 
       if (userId) {
@@ -158,13 +158,13 @@ module.exports = function (server) {
               where: { status: 'Approved' },
               select: { userId: true }
             },
-             hospital:{
-             
-              select:{ name:true, address: true}
+            hospital: {
+
+              select: { name: true, address: true }
             }
           }
         });
-        
+
       } else {
         vacancies = await prisma.vacancy.findMany({
           include: {
@@ -172,9 +172,9 @@ module.exports = function (server) {
               where: { status: 'Approved' },
               select: { userId: true }
             },
-            hospital:{
-             
-              select:{ name:true, address: true}
+            hospital: {
+
+              select: { name: true, address: true }
             }
 
           }
@@ -188,7 +188,27 @@ module.exports = function (server) {
       res.status(500).json({ error: 'Erro ao encontrar vagas' });
     }
   });
+  router.get('/leaderboard', async (req, res) => {
+    try {
+      const users = await prisma.user.findMany({
+        take: 10,
+        orderBy: {
+          score: 'desc'
+        },
+        where:{
+          role:'Volunteer'
+        },
+        select:{
+          name:true, score:true
+        }
+      });
 
+      res.status(200).json({ message: 'Tabela encontrada com sucesso', users});
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Erro ao buscar a tabela' });
+    }
+  });
 
 
 
