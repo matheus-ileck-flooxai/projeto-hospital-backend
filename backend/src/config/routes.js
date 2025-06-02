@@ -131,7 +131,6 @@ module.exports = function (server) {
 
     } catch (error) {
 
-      console.log(error);
 
 
       res.status(400).json({ error: 'Erro ao cadastrar novo usuário' });
@@ -151,7 +150,7 @@ module.exports = function (server) {
               where:{
                 userId: +userId
               },
-              select: { userId: true }
+              select: { userId: true, id: true}
             },
             hospital: {
 

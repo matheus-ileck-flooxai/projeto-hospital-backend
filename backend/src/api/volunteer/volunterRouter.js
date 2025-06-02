@@ -117,10 +117,21 @@ router.post('/newapplication', async (req, res) => {
 router.delete('/cancelapplication/:id', async (req, res) => {
   try {
     const { id } = req.params
-    const { userId } = req.user.userid
+    const userId = req.user.userid
+
+    
+    
+    const application = await prisma.application.findFirst({
+      where: {
+        id: +id,
+        userId
+      }
+    })
+
+    
     await prisma.application.deleteMany({
       where: {
-        vacancyId: +id,
+        id: +id,
         userId
       }
     });
@@ -129,7 +140,6 @@ router.delete('/cancelapplication/:id', async (req, res) => {
     res.status(200).json({ message: 'Solicitação removida com sucesso!' });
 
   } catch (error) {
-    console.log(error);
 
 
 
