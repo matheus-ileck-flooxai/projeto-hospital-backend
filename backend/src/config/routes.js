@@ -146,16 +146,11 @@ module.exports = function (server) {
 
       if (userId) {
         vacancies = await prisma.vacancy.findMany({
-          where: {
-            applications: {
-              none: {
-                userId: +userId
-              }
-            }
-          },
           include: {
             applications: {
-              where: { status: 'Approved' },
+              where:{
+                userId: +userId
+              },
               select: { userId: true }
             },
             hospital: {
@@ -195,15 +190,15 @@ module.exports = function (server) {
         orderBy: {
           score: 'desc'
         },
-        where:{
-          role:'Volunteer'
+        where: {
+          role: 'Volunteer'
         },
-        select:{
-          name:true, score:true
+        select: {
+          name: true, score: true
         }
       });
 
-      res.status(200).json({ message: 'Tabela encontrada com sucesso', users});
+      res.status(200).json({ message: 'Tabela encontrada com sucesso', users });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Erro ao buscar a tabela' });

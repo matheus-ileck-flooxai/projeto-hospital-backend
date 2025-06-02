@@ -22,28 +22,33 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
 
-    userId = req.user.userid
+    const userId = req.user.userid;
 
-   const user = await prisma.user.findFirst({
-  where: { id: +userId },
-  include: {
-    applications: {
-      where: { status: 'Approved' },
+    const user = await prisma.user.findFirst({
+      where: { id: +userId },
       include: {
-        vacancy: {
-          include: { 
-            hospital: {
-              select: {
-                name: true,
-                address: true,
+        applications: {
+          where: {
+            status: {
+              in: ['Pending', 'Approved']
+            }
+          },
+          include: {
+            vacancy: {
+              include: {
+                hospital: {
+                  select: {
+                    name: true,
+                    address: true,
+                  }
+                }
               }
             }
           }
         }
       }
-    }
-  }
-});
+    });
+
 
 
     if (user == null) {
@@ -108,5 +113,28 @@ router.post('/newapplication', async (req, res) => {
   }
 })
 
+
+router.delete('/cancelapplication/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    const { userId } = req.user.userid
+    await prisma.application.deleteMany({
+      where: {
+        vacancyId: +id,
+        userId
+      }
+    });
+
+
+    res.status(200).json({ message: 'Solicitação removida com sucesso!' });
+
+  } catch (error) {
+    console.log(error);
+
+
+
+    res.status(500).json({ error: 'Erro ao remover vaga' });
+  }
+});
 
 module.exports = router;
