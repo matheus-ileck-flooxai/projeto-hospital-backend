@@ -77,10 +77,13 @@ module.exports = function (server) {
       const user = await prisma.user.findUnique({
         where: { email }
       });
+      if(!user){
+        return res.status(404).json({ error: 'Usuário não encontrado!' });
 
+      }
 
-      if (!user || user.password !== password)
-        return res.status(401).json({ error: 'Dados incorretos' });
+      if (user.password !== password)
+        return res.status(401).json({ error: 'Senha incorreta!' });
 
       if (user.role !== 'Admin') {
         const token = jwt.sign(
@@ -115,6 +118,16 @@ module.exports = function (server) {
     try {
 
       const { name, email, password, age, role, score, phone_number } = req.body
+
+      const userExist = await prisma.user.findUnique({
+        where: {
+          email: email
+        }
+      });
+      if (userExist) {
+        return res.status(400).json({ message: 'Email Indisponível.' })
+      }
+
       const newUser = await prisma.user.create({
         data: {
           name,
@@ -193,7 +206,7 @@ module.exports = function (server) {
           role: 'Volunteer'
         },
         select: {
-         id:true, name: true, score: true
+          id: true, name: true, score: true
         }
       });
 
