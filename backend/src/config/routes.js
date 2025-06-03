@@ -147,10 +147,10 @@ module.exports = function (server) {
         vacancies = await prisma.vacancy.findMany({
           include: {
             applications: {
-              where:{
+              where: {
                 userId: +userId
               },
-              select: { userId: true, id: true}
+              select: { userId: true, id: true }
             },
             hospital: {
 
@@ -185,7 +185,7 @@ module.exports = function (server) {
   router.get('/leaderboard', async (req, res) => {
     try {
       const users = await prisma.user.findMany({
-        take: 10,
+
         orderBy: {
           score: 'desc'
         },
@@ -193,9 +193,10 @@ module.exports = function (server) {
           role: 'Volunteer'
         },
         select: {
-          name: true, score: true
+         id:true, name: true, score: true
         }
       });
+
 
       res.status(200).json({ message: 'Tabela encontrada com sucesso', users });
     } catch (error) {
