@@ -88,6 +88,9 @@
           "401": {
             "description": "Unauthorized"
           },
+          "404": {
+            "description": "Not Found"
+          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -621,6 +624,9 @@
                 "password": {
                   "example": "any"
                 },
+                "oldPassword": {
+                  "example": "any"
+                },
                 "phone_number": {
                   "example": "any"
                 }
@@ -631,6 +637,9 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "500": {
             "description": "Internal Server Error"

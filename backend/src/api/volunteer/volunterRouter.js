@@ -64,8 +64,18 @@ router.get('/:id', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   try {
-    const { name, email, age, password, phone_number, } = req.body
+    const { name, email, age, password, oldPassword, phone_number, } = req.body
     const id = parseInt(req.params.id);
+
+    const user = await prisma.user.findFirst({
+      where: {
+        id
+      }
+    })
+
+    if(oldPassword != user.password){
+      return res.status(401).json({error: 'Senha antiga incorreta.'})
+    }
 
     const updatedUser = await prisma.user.update({
       data: {
@@ -119,8 +129,8 @@ router.delete('/cancelapplication/:id', async (req, res) => {
     const { id } = req.params
     const userId = req.user.userid
 
-    
-    
+
+
     const application = await prisma.application.findFirst({
       where: {
         id: +id,
@@ -128,7 +138,7 @@ router.delete('/cancelapplication/:id', async (req, res) => {
       }
     })
 
-    
+
     await prisma.application.deleteMany({
       where: {
         id: +id,

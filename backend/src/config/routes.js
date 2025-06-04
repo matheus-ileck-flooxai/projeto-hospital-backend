@@ -65,7 +65,7 @@ module.exports = function (server) {
       res.status(500).json({ error });
     }
   });
-
+    
   //login usuario
   router.post('/user/login', async (req, res) => {
     const jwt = require('jsonwebtoken')
